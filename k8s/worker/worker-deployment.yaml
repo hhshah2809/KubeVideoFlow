@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker # <--- This is the deployment name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker
+        image: shahhet41/worker # <--- FIXED: Now matches your exact local build name (2 h's)
+        imagePullPolicy: IfNotPresent # <--- Allows K8s to safely check Minikube cache first
+        resources:
+          requests:
+            cpu: "200m"
+          limits:
+            cpu: "500m"
+        env:
+        - name: MONGO_URL
+          value: "mongodb://mongodb-service:27017/videodb"
+        - name: RABBITMQ_URL
+          value: "amqp://rabbitmq-service:5672"
+        - name: QUEUE_NAME
+          value: "video-processing"
+        volumeMounts:
+        - name: video-storage
+          mountPath: /app/uploads
+      volumes:
+      - name: video-storage
+        persistentVolumeClaim:
+          claimName: video-pvc
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: video-worker-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: worker # <--- FIXED: Now correctly points to "worker" instead of "video-worker"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70

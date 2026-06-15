@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: video-mongodb
+    ports:
+      - "27017:27017"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: video-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672" # RabbitMQ Management Dashboard
+
+  backend:
+    build: ./backend
+    container_name: video-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/videodb
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    volumes:
+      - video-storage:/app/uploads
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+  worker:
+    build: ./worker
+    container_name: video-worker
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/videodb
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - QUEUE_NAME=video-processing
+    volumes:
+      - video-storage:/app/uploads
+    depends_on:
+      - rabbitmq
+      - mongodb
+
+volumes:
+  video-storage:

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: shahhet41/backend # Replace with your Docker Hub image tag
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MONGO_URL
+          value: "mongodb://mongodb-service:27017/videodb"
+        - name: RABBITMQ_URL
+          value: "amqp://rabbitmq-service:5672"
+        volumeMounts:
+        - name: video-storage
+          mountPath: /app/uploads
+      volumes:
+      - name: video-storage
+        persistentVolumeClaim:
+          claimName: video-pvc

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: video-pvc
+spec:
+  accessModes:
+    - ReadWriteMany # Allows multiple backend and worker pods to access files at the same time
+  resources:
+    requests:
+      storage: 2Gi

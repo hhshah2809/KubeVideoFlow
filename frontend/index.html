@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Compression Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Video Compression Platform</h1>
+        <p class="subtitle">
+            Upload your video and choose the desired resolution.
+        </p>
+
+        <form id="uploadForm">
+
+            <label>Full Name</label>
+            <input
+                type="text"
+                name="name"
+                placeholder="Enter your name"
+                required
+            >
+
+            <label>Email Address</label>
+            <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+            <label>Target Resolution</label>
+            <select name="resolution">
+                <option value="1080p">1080p</option>
+                <option value="720p" selected>720p</option>
+                <option value="480p">480p</option>
+                <option value="360p">360p</option>
+            </select>
+
+            <label>Select Video</label>
+            <input
+                type="file"
+                name="video"
+                accept="video/*"
+                required
+            >
+
+            <button type="submit">
+                Upload Video
+            </button>
+
+        </form>
+
+        <div class="status-box">
+            <h3>Upload Status</h3>
+            <p id="status">
+                Waiting for upload...
+            </p>
+        </div>
+
+        <div class="download-box">
+            <h3>Processed Video</h3>
+            <a id="downloadLink"></a>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
