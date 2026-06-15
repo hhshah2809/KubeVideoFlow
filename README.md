@@ -24,7 +24,7 @@ Users upload videos through a web interface, and the platform asynchronously pro
 
 # 🏗️ System Architecture
 
-![Architecture](architecture/architecture-diagram.png)
+![Architecture](screenshots/arch.png)
 
 ### Processing Flow
 
